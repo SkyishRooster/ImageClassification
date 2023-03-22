@@ -12,8 +12,8 @@ There are two training datasets designed for round 1 and round 2 of the competit
 5. Neckline Design: Invisible, Strapless Neck, Deep V Neckline, Straight Neck, V Neckline, Square Neckline, Off Shoulder, Round Neckline, Swear Heart Neck, One Shoulder Neckline
 6. Pant Length: Invisible, Short Pant, Mid Length, 3/4 Length, Cropped Pant, Full Length
 7. Skirt Length: Invisible, Short Length, Knee Length, Midi Length, Ankle Length, Floor Length
-8. Sleeve Length: Invisible, Sleeveless, Cup Sleeves, Short Sleeves, Elbow Sleeves, 3/4 Sleeves, Wrist Length, Long Sleeves, Extra Long Sleeves  
-<br>
+8. Sleeve Length: Invisible, Sleeveless, Cup Sleeves, Short Sleeves, Elbow Sleeves, 3/4 Sleeves, Wrist Length, Long Sleeves, Extra Long Sleeves
+  
 [main.py](https://github.com/SkyishRooster/ImageClassification/blob/433aa4e18fe3083c006d374166fc950c6a934185/main.py) is the main part of the image classification training job. This python script file mainly performs jobs mentioned below:  
 1. Load data and Split the data into training and validation set;  
 2. Five Data Augmentation layers for choice including RandomFilp, RandomRotation, RandomTranslation, RandomBrightness, and RandomContrast;
