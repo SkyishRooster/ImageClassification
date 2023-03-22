@@ -5,7 +5,7 @@ import os
 
 
 # Specify the working directory
-os.chdir("C://UCD/__Practicum/ImageTagging/tianchi_data/")
+os.chdir("<your-work-directory-where-the-data-is-stored>")
 
 # Get labels
 labels1 = pd.read_csv("round1_train/Annotations/label.csv", names=["path", "folder", "code"])
@@ -55,10 +55,6 @@ def Distr(data):
     plt.hist(data['label'])
     plt.show()
 
-Distr(lapel_data)
-Distr(neck_data)
-Distr(sleeve_data)
-
 
 ## Check the graphs of certain label
 def Graph(data, label):
@@ -70,16 +66,8 @@ def Graph(data, label):
         imgplot = plt.imshow(img)
     plt.show()
 
-Graph(lapel_data, 'Invisible')
-Graph(lapel_data, "Collarless")
-Graph(neck_data, "Turtle Neck")
-Graph(neck_data, "Low Turtle Neck")
-Graph(neck_data, "Draped Collar")
-Graph(neck_data, "Ruffle Semi-High Collar")
-Graph(sleeve_data, "Invisible")
-Graph(sleeve_data, "Short Sleeves")
-Graph(sleeve_data, "Wrist Length")
 
+# Implementation on some categories
 ## Combine labels
 '''lapel: Collarless -> Invisible; Plus Size Shawl -> Shawl Collar'''
 lapel_data = lapel_data.replace(["Collarless","Plus Size Shawl"], ['Invisible',"Shawl Collar"])
