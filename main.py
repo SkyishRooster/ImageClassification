@@ -12,7 +12,7 @@ from tensorflow.data import AUTOTUNE
 from tensorflow.keras.layers.experimental import preprocessing
 
 # Change the directory
-os.chdir("C://UCD/__Practicum/ImageTagging/tianchi_data/train/Images")
+os.chdir("<your-work-directory>/train/Images")      # "train" is the directory of the combined dataset of the two training set
 
 
 ## Split the data
@@ -59,28 +59,28 @@ def dataAug(train_ds):
     ds_4 = train_ds.map(lambda x, y: (aug4(x), y), num_parallel_calls=AUTOTUNE)
     aug5 = layers.RandomContrast(0.4)
     ds_5 = train_ds.map(lambda x, y: (aug5(x), y), num_parallel_calls=AUTOTUNE)
-    train_ds = train_ds.concatenate(ds_1).concatenate(ds_2).concatenate(ds_3)#.concatenate(ds_4).concatenate(ds_5)
+    train_ds = train_ds.concatenate(ds_1).concatenate(ds_2).concatenate(ds_3).concatenate(ds_4).concatenate(ds_5)
     train_ds = train_ds.shuffle(1000).prefetch(buffer_size=AUTOTUNE)
     return train_ds
 
 
 ## Run the model
 def RUN(train_ds, val_ds, category, inception = False, trainable = False, epoch = 60, earlystop = 15):
+    '''Default model selection is the ResNet v2 50 without fine-tuning, while Inception ResNet v2 and Fine-tune are optional'''
     ## Build the modle
     n_classes = train_ds.element_spec[1].shape[-1]
 
     if inception == False:
         IMG_DIM = 224      # for ResNet v2
-        basemodel_path = "C://UCD/__Practicum/ImageTagging/imagenet_resnet_v2_50_classification_5"
+        basemodel_path = "https://tfhub.dev/google/imagenet/resnet_v2_50/classification/5"
+        #basemodel_path = "<directory for storing the downloaded model>/imagenet_resnet_v2_50_classification_5"
     else:
         IMG_DIM = 299       # for Inception ResNet v2
-        basemodel_path = "C://UCD/__Practicum/ImageTagging/imagenet_inception_resnet_v2_classification_5"
+        basemodel_path = "https://tfhub.dev/google/imagenet/inception_resnet_v2/classification/5"
+        #basemodel_path = "<directory for storing the downloaded model>/imagenet_inception_resnet_v2_classification_5"
    
 
     model = Sequential([
-        #preprocessing.Rescaling(1/.255, input_shape = (IMG_DIM, IMG_DIM,3)),
-        #hub.KerasLayer("https://tfhub.dev/google/imagenet/resnet_v2_50/classification/5",
-        #hub.KerasLayer("https://tfhub.dev/google/imagenet/inception_resnet_v2/classification/5",
         hub.KerasLayer(basemodel_path,
         trainable = trainable,
         arguments = dict(batch_norm_momentum = 0.997)),
@@ -99,6 +99,7 @@ def RUN(train_ds, val_ds, category, inception = False, trainable = False, epoch 
     ## Fit the model
     epochs = epoch
 
+    # Store the weights of the model which has the best performance on the validation set
     checkpoint = ModelCheckpoint(f"weights_{category}.hdf5", monitor='val_accuracy', mode="max", verbose = 1, save_best_only=True)
     early_stopping = EarlyStopping(monitor='val_accuracy', patience=earlystop)
     callback_list = [checkpoint, early_stopping]
@@ -140,7 +141,7 @@ def Vis(history, category):
     plt.show()
 
 
-
+## Examples of using this py files 
 # Lapel_Design
 lapel_train, lapel_val = Split("lapel_design_labels")
 #lapel_train = dataAug(lapel_train)
@@ -152,19 +153,3 @@ hist_lapel_incp = RUN(lapel_train, lapel_val, "Lapel_Design_IncpResNetV2", True,
 Vis(hist_lapel_incp, 'Lapel_Design_incp')
 hist_lapel_incp_tr = RUN(lapel_train, lapel_val, "Lapel_Design_ResNetV2_Tr", True, True, 20)
 Vis(hist_lapel_incp_tr, 'Lapel_Design_incp_tr')
-
-# Neck_Design
-neck_train, neck_val = Split("neck_design_labels")
-#neck_train = dataAug(neck_train)
-hist_neck = RUN(neck_train, neck_val, "Neck_Design_ResNetV2", False, False, 10)
-Vis(hist_neck, "Neck_Design1")
-hist_neck_tr = RUN(neck_train, neck_val, "Neck_Design_ResNetV2_Tr", False, True, 20)
-Vis(hist_neck_tr, 'Neck_Design_tr')
-
-# Sleeve_Length
-sleeve_train, sleeve_val = Split("sleeve_length_labels")
-#sleeve_train = dataAug(neck_train)
-hist_neck = RUN(neck_train, neck_val, "Neck_Design_ResNetV2", False, False, 10)
-hist_neck_tr = RUN(neck_train, neck_val, "Neck_Design_ResNetV2_Tr", False, True, 20)
-Vis(hist_neck, "Neck_Design1")
-Vis(hist_neck_tr, 'Neck_Design_tr')
