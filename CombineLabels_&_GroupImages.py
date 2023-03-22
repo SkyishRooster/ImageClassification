@@ -37,11 +37,13 @@ collar = ['Invisible', 'Shirt Collar', 'Peter Pan', 'Puritan Collar', 'Rib Colla
 lapel = ["Invisible", "Notched", "Collarless", "Shawl Collar", "Plus Size Shawl"]
 neck = ["Invisible", "Turtle Neck", "Ruffle Semi-High Collar", "Low Turtle Neck", "Draped Collar"]
 neckline = ['Invisible','Strapless Neck','Deep V Neckline','Straight Neck','V Neckline','Square Neckline','Off Shoulder','Round Neckline','Swear Heart Neck','One Shoulder Neckline']
-pant = ['Invisible', 'Short Pant', 'Mid Length', '3/4 Length', 'Cropped Pant', 'Full Length']
+pant = ['Invisible', 'Short Pant', 'Mid Length', '3_4 Length', 'Cropped Pant', 'Full Length']
 skirt = ['Invisible', 'Short Length', 'Knee Length', 'Midi Length', 'Ankle Length', 'Floor Length']
 sleeve = ['Invisible','Sleeveless','Cup Sleeves','Short Sleeves','Elbow Sleeves','3_4 Sleeves','Wrist Length','Long Sleeves','Extra Long Sleeves']
 
 categories = ['coat','collar','lapel','neck','neckline','pant','skirt','sleeve']
+
+
 
 ## Decode label 
 def decode(data, list):
@@ -50,7 +52,7 @@ def decode(data, list):
         pos = data.loc[i,'code'].find('y')
         data.loc[i,'label'] = list[pos]
 
-        
+
 # Examples of Decoding specific categories
 #decode(lapel_data, lapel)
 #decode(sleeve_data, sleeve)
@@ -63,11 +65,43 @@ for i in categories:
 for i,j in zip(datasets,categories):
     decode(globals()[i],globals()[j])
 
-    
+
+
+# Create subfolders for each category based on the labels
+os.chdir("<where-you-store-the-data>")
+foldernames = ['coat_length_labels','collar_design_labels','lapel_design_labels','neck_design_labels','neckline_design_labels','pant_length_labels','skirt_length_labels','sleeve_length_labels']
+for label, foldername in zip(categories, foldernames):
+    if not os.path.exists(f"{foldername}"):
+        os.mkdir(f"{foldername}")
+    for i in globals()[label]:
+        if not os.path.exists(f"{foldername}/{i}"):
+            os.mkdir(f"{foldername}/{i}")
+
+
+## Group images to corresponding folders and update path
+def group(data):
+    for i in range(len(data)):
+        split = os.path.split(data.loc[i,'path'])
+        oldpath = split[1]
+        newpath = data.loc[i,'label']+'/'+oldpath
+        data.loc[i,'path'] = newpath
+        try:
+            os.rename(oldpath, newpath)
+        except:
+            continue
+            
+# Some examples of implementation
+group(sleeve_data)
+group(lapel_data)
+group(neck_data)           
+
+
+
 ## Check the distribution of labels
 def Distr(data):
     plt.hist(data['label'])
     plt.show()
+
 
 
 ## Check the graphs of certain label
@@ -81,8 +115,7 @@ def Graph(data, label):
     plt.show()
 
 
-# Implementation on some categories
-## Combine labels
+# Implementations of combing labels for some categories
 '''lapel: Collarless -> Invisible; Plus Size Shawl -> Shawl Collar'''
 Distr(lapel_data)
 Graph(lapel_data, 'Invisible')
@@ -111,3 +144,28 @@ sleeve_data = sleeve_data.replace(["Extra Long Sleeves", "Wrist Length","3_4 Sle
 sleeve_data.head()
 sleeve_data['label'].unique()
 sleeve_data.shape
+
+
+
+## Regroup the files into new folders after combining labels 
+# - After examinined the data distribution and decided on the labels to be combined
+def regroup(data, newdata):
+    for i in range(len(data)):
+        split = os.path.split(data.loc[i,'path'])
+        oldpath = data.loc[i,'label']+'/'+split[1]
+        newpath = newdata.loc[i,'label']+'/'+split[1]
+        try:
+            os.rename(oldpath, newpath)
+        except:
+            continue          
+
+# Some examples of implementation
+new_lapel_data = lapel_data.replace(["Collarless","Plus Size Shawl"], ['Invisible',"Shawl Collar"])
+regroup(lapel_data, new_lapel_data)
+
+new_neck_data = neck_data.replace(["Low Turtle Neck"], ["Turtle Neck"])
+regroup(neck_data, new_neck_data)
+
+new_sleeve_data = sleeve_data.replace(["Extra Long Sleeves", "Wrist Length","3_4 Sleeves","Cup Sleeves"], ["Long Sleeves","Long Sleeves","Elbow Sleeves","Short Sleeves"])
+#new_sleeve_data = new_sleeve_data[new_sleeve_data['label'] != 'Invisible']
+regroup(sleeve_data, new_sleeve_data)
