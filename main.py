@@ -67,7 +67,7 @@ def dataAug(train_ds):
 ## Run the model
 def RUN(train_ds, val_ds, category, inception = False, trainable = False, epoch = 60, earlystop = 15):
     '''Default model selection is the ResNet v2 50 without fine-tuning, while Inception ResNet v2 and Fine-tune are optional'''
-    ## Build the modle
+    ## Build the model
     n_classes = train_ds.element_spec[1].shape[-1]
 
     if inception == False:
