@@ -13,6 +13,14 @@ labels2 = pd.read_csv("round2_train/Annotations/label.csv", names=["path", "fold
 labels = pd.concat([labels1, labels2], ignore_index=True)
 labels.head()
 
+'''# Check if no-y exists
+for i in range(len(labels)):
+    if "y" not in labels.loc[i,'code']:
+        print("yes", i)
+        break
+#  NO SUCH SITUATION - NO OUTPUT IN THE TERMINAL
+'''
+
 # Subset annotations
 coat_data = labels[labels['folder'] == 'coat_length_labels'].reset_index(drop=True)
 collar_data = labels[labels['folder'] == 'collar_design_labels'].reset_index(drop=True)
@@ -35,21 +43,27 @@ sleeve = ['Invisible','Sleeveless','Cup Sleeves','Short Sleeves','Elbow Sleeves'
 
 categories = ['coat','collar','lapel','neck','neckline','pant','skirt','sleeve']
 
-datasets = []
-for i in categories:
-    datasets.append(f'{i}_data')
-
 ## Decode label 
 def decode(data, list):
+    '''Assign corresponding labels based on the position of "y" in the encoded labels'''
     for i in range(len(data)):
         pos = data.loc[i,'code'].find('y')
         data.loc[i,'label'] = list[pos]
 
+        
+# Examples of Decoding specific categories
+#decode(lapel_data, lapel)
+#decode(sleeve_data, sleeve)
+
 # Decode labels for each category
+datasets = []
+for i in categories:
+    datasets.append(f'{i}_data')
+    
 for i,j in zip(datasets,categories):
     decode(globals()[i],globals()[j])
 
-
+    
 ## Check the distribution of labels
 def Distr(data):
     plt.hist(data['label'])
@@ -70,16 +84,28 @@ def Graph(data, label):
 # Implementation on some categories
 ## Combine labels
 '''lapel: Collarless -> Invisible; Plus Size Shawl -> Shawl Collar'''
+Distr(lapel_data)
+Graph(lapel_data, 'Invisible')
+Graph(lapel_data, "Collarless")
 lapel_data = lapel_data.replace(["Collarless","Plus Size Shawl"], ['Invisible',"Shawl Collar"])
 lapel_data.head()
 lapel_data['label'].unique()
 
 '''neck: Low Turtle Neck -> Turtle Neck'''
+Distr(neck_data)
+Graph(neck_data, "Turtle Neck")
+Graph(neck_data, "Low Turtle Neck")
+Graph(neck_data, "Draped Collar")
+Graph(neck_data, "Ruffle Semi-High Collar")
 neck_data = neck_data.replace(["Low Turtle Neck"], ["Turtle Neck"])
 neck_data.head()
 neck_data['label'].unique()
 
 '''sleeve: Drop Invisible; Extra Long Sleeves, Wrist Length -> Long Sleeves; 3/4 Sleeves -> Elbow Sleeves; Cup Sleeves -> Short Sleeves'''
+Distr(sleeve_data)
+Graph(sleeve_data, "Invisible")
+Graph(sleeve_data, "Short Sleeves")
+Graph(sleeve_data, "Wrist Length")
 sleeve_data = sleeve_data[sleeve_data['label'] != 'Invisible']
 sleeve_data = sleeve_data.replace(["Extra Long Sleeves", "Wrist Length","3_4 Sleeves","Cup Sleeves"], ["Long Sleeves","Long Sleeves","Elbow Sleeves","Short Sleeves"])
 sleeve_data.head()
