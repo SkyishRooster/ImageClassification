@@ -14,12 +14,14 @@ There are two training datasets designed for round 1 and round 2 of the competit
 7. Skirt Length: Invisible, Short Length, Knee Length, Midi Length, Ankle Length, Floor Length
 8. Sleeve Length: Invisible, Sleeveless, Cup Sleeves, Short Sleeves, Elbow Sleeves, 3/4 Sleeves, Wrist Length, Long Sleeves, Extra Long Sleeves
   
+  
 [main.py](https://github.com/SkyishRooster/ImageClassification/blob/433aa4e18fe3083c006d374166fc950c6a934185/main.py) is the main part of the image classification training job. This python script file mainly performs jobs mentioned below:  
 1. Load data and Split the data into training and validation set;  
 2. Five Data Augmentation layers for choice including RandomFilp, RandomRotation, RandomTranslation, RandomBrightness, and RandomContrast;
 3. Use transfer learning to train the model. The default model selection for transfer learning is the ResNet v2 model of 50 layers without fine-tuning, while Inception ResNet v2 model and Fine-tune are optional. The model is trained separately for different categories;
 4. Store the weights of the model which has the best performance on the validation set for future use;
 5. Visualize the training process by ploting the changes in training, validation loss and accuracy over epoches.  
+  
   
 [Preprocess.py](https://github.com/SkyishRooster/ImageClassification/blob/7c04b5222718442c248eaccb09502d697348ba16/Preprocess.py) is used for preprocessing the dataset by grouping images based on labels into subfolders and combining labels based on the distribution and nature of the labels. Main steps to accomplish the task are listed below:  
 1. As mentioned above, combine round 1 and round 2 training set together as an integrated training set;  
