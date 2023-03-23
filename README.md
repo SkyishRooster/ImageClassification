@@ -3,7 +3,7 @@
 The dataset for training and testing the model is from [FashionAI Attributes Recognition of Apparel Dataset](https://tianchi.aliyun.com/dataset/136948). The dataset can be downloaded directly from the link as long as you’ve registered for a free account.<br>
 <br>
 There are two training datasets designed for round 1 and round 2 of the competition. Since the categories and labels are the same, I combined the images in these two datasets together as a new dataset. The training job is done baded on the integrated dataset.  
-<br>
+
 ### [AttributeDescription.md](https://github.com/SkyishRooster/ImageClassification/blob/a2dea13dea5c89f4481b5d23cacda3ec77339b48/AttributeDescription.md) displays the information about the attributes contained in the dataset. There are 8 categories in the dataset, and 5 - 10 attributes for each category. Below are the categories and corresponding labels that we look at:  
 1. Coat Length: Invisible, High Waist Length,Regular Length,Long Length,Micro Length, Knee Length, Midi Length, Anckle&Floor Length
 2. Collar Design: Invisible, Shirt Collar, Peter Pan, Puritan Collar, Rib Collar
