@@ -20,7 +20,7 @@ There are two training datasets designed for round 1 and round 2 of the competit
 3. Use transfer learning to train the model. The default model selection for transfer learning is the ResNet v2 model of 50 layers without fine-tuning, while Inception ResNet v2 model and Fine-tune are optional. The model is trained separately for different categories;
 4. Store the weights of the model which has the best performance on the validation set for future use;
 5. Visualize the training process by ploting the changes in training, validation loss and accuracy over epoches.  
-<br>
+  
 [Preprocess.py](https://github.com/SkyishRooster/ImageClassification/blob/7c04b5222718442c248eaccb09502d697348ba16/Preprocess.py) is used for preprocessing the dataset by grouping images based on labels into subfolders and combining labels based on the distribution and nature of the labels. Main steps to accomplish the task are listed below:  
 1. As mentioned above, combine round 1 and round 2 training set together as an integrated training set;  
 2. Decode the original labels to eligible ones: Assign corresponding labels based on the position of "y" in the encoded labels. For example, "nnynn" for "Collar Design" category denotes the label "Peter Pan" since its the third label in the category;
